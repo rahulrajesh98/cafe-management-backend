@@ -6,6 +6,6 @@ import org.springframework.http.ResponseEntity;
 public class CafeUtils {
 
     public static ResponseEntity<String> getResponseEntity(String responseMessage, HttpStatus httpStatus) {
-        return new  ResponseEntity<String>("\"message\":\"" + responseMessage +"\"}",httpStatus);
+        return new  ResponseEntity<String>(responseMessage,httpStatus);
     }
 }

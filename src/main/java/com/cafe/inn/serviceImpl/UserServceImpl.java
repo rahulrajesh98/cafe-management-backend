@@ -24,14 +24,17 @@ public class UserServceImpl implements UserService {
     @Override
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
         try {
+            System.out.println(requestMap);
 
             if (validateRequestMap(requestMap)) {
 
                 User user = userDao.findByEmailId(requestMap.get("email"));
-                if (Objects.isNull(user)) {
+                if(Objects.isNull(user)){
                     userDao.save(getUserFromMap(requestMap));
                     CafeUtils.getResponseEntity("Successfully Registered", HttpStatus.OK);
-                } else {
+                }
+
+                else {
                     CafeUtils.getResponseEntity("Email Already Exists", HttpStatus.BAD_REQUEST);
                 }
             } else {
@@ -40,8 +43,8 @@ public class UserServceImpl implements UserService {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG,HttpStatus.INTERNAL_SERVER_ERROR);
-
+        //return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+        return null;
 
     }
 
@@ -62,8 +65,8 @@ public class UserServceImpl implements UserService {
         user.setContactNumber(requestMap.get("contactNumber"));
         user.setEmail(requestMap.get("email"));
         user.setPassword(requestMap.get("password"));
-        user.setStatus(requestMap.get("false"));
-        user.setRole(requestMap.get("user"));
+        user.setStatus("false");
+        user.setRole("user");
         return user;
     }
 }
