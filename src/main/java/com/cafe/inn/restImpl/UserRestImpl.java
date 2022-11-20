@@ -1,6 +1,7 @@
 package com.cafe.inn.restImpl;
 
 import com.cafe.inn.constants.CafeConstants;
+import com.cafe.inn.dao.UserDao;
 import com.cafe.inn.rest.UserRest;
 import com.cafe.inn.service.UserService;
 import com.cafe.inn.utils.CafeUtils;
