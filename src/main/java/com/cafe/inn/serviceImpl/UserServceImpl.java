@@ -23,28 +23,20 @@ public class UserServceImpl implements UserService {
 
     @Override
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
-        try {
-            System.out.println(requestMap);
+        if (validateRequestMap(requestMap)) {
 
-            if (validateRequestMap(requestMap)) {
-
-                User user = userDao.findByEmailId(requestMap.get("email"));
-                if(Objects.isNull(user)){
-                    userDao.save(getUserFromMap(requestMap));
-                    CafeUtils.getResponseEntity("Successfully Registered", HttpStatus.OK);
-                }
-
-                else {
-                    CafeUtils.getResponseEntity("Email Already Exists", HttpStatus.BAD_REQUEST);
-                }
-            } else {
-                return CafeUtils.getResponseEntity(CafeConstants.INVALID_DATA, HttpStatus.BAD_REQUEST);
+            User user = userDao.findByEmailId(requestMap.get("email"));
+            if(Objects.isNull(user)){
+                userDao.save(getUserFromMap(requestMap));
+                return new ResponseEntity<String>("Successfully Registered",HttpStatus.OK);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+
+            else {
+                return new ResponseEntity<String>("Email Already Exists",HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            return new ResponseEntity<String>("Invalid Inputs",HttpStatus.BAD_REQUEST);
         }
-        //return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
-        return null;
 
     }
 
