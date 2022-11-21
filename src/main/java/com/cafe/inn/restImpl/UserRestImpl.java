@@ -53,5 +53,10 @@ public class UserRestImpl implements UserRest {
         return userService.changePassword(requestMap);
     }
 
+    @Override
+    public ResponseEntity<String> forgotPassword(Map<String, String> requestMap) {
+        return userService.forgotPassword(requestMap);
+    }
+
 
 }
