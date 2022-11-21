@@ -18,10 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -112,6 +109,22 @@ public class UserServceImpl implements UserService {
         }
 
          //return  new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<String> updateStatus(Map<String, String> requestMap) {
+        if(jwtFilter.isAdmin()){
+            Optional<User> optional = userDao.findById(Integer.parseInt(requestMap.get("id")));
+            if(!optional.isEmpty()){
+                userDao.updateStatus(requestMap.get("status"),Integer.parseInt(requestMap.get("id")));
+                return new ResponseEntity<>("User status updated Successfully",HttpStatus.OK);
+
+            }
+            else
+                return new ResponseEntity<>("Id does not Exist",HttpStatus.BAD_REQUEST);
+        }
+        else
+            return new ResponseEntity<>("Unauthorized Access",HttpStatus.UNAUTHORIZED);
     }
 
 

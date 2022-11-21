@@ -38,4 +38,10 @@ public class UserRestImpl implements UserRest {
         return userService.getAllUser();
     }
 
+    @Override
+    public ResponseEntity<String> updateStatus(Map<String, String> requestMap) {
+        return userService.updateStatus(requestMap);
+    }
+
+
 }

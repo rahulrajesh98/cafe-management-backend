@@ -18,4 +18,7 @@ public interface UserRest {
 
     @GetMapping("/get")
     public ResponseEntity<List<UserDto>> getAllUsers();
+
+    @PostMapping("/updatestatus")
+    public ResponseEntity<String> updateStatus(@RequestBody Map<String,String> requestMap);
 }
