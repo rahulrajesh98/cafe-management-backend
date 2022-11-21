@@ -143,7 +143,6 @@ public class UserServceImpl implements UserService {
             String text = "User :\n " + user + " is disabled by \n " + jwtFilter.getCurrentUser();
             emailUtils.sendSimpleMessage(jwtFilter.getCurrentUser(), "Account Disabled", text, allAdmin);
         }
-
     }
 
     @Override
@@ -163,7 +162,6 @@ public class UserServceImpl implements UserService {
                 return new ResponseEntity<>("Old password wrong", HttpStatus.BAD_REQUEST);
         } else
             return new ResponseEntity<>("No user found", HttpStatus.INTERNAL_SERVER_ERROR);
-
     }
 
     @Override
@@ -174,15 +172,9 @@ public class UserServceImpl implements UserService {
                 emailUtils.forgotMail(user.getEmail(), "Credentials", user.getPassword());
                 return new ResponseEntity<>("Check you mail for credentials", HttpStatus.OK);
             }
-
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return null;
-
-
     }
-
-
 }

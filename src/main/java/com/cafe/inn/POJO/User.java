@@ -11,10 +11,12 @@ import java.io.Serializable;
 @NamedQuery(name = "User.getAllUsers",query = "select new com.cafe.inn.wrapper.UserDto(u.id,u.name,u.email,u.contactNumber,u.status) from User u where u.role='user' ")
 @NamedQuery(name = "User.updateStatus",query = "update User u set u.status=:status where u.id=:id")
 @NamedQuery(name = "User.getAllAdmin",query = "select u.email from User u where u.role='admin' ")
+
 @Data
 @Entity
 @DynamicInsert
 @DynamicUpdate
+@Table(name = "user")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
