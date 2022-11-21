@@ -1,5 +1,7 @@
 package com.cafe.inn.serviceImpl;
 
+import com.cafe.inn.JWT.CustomerUsersDetailsService;
+import com.cafe.inn.JWT.JwtUtil;
 import com.cafe.inn.POJO.User;
 import com.cafe.inn.constants.CafeConstants;
 import com.cafe.inn.dao.UserDao;
@@ -9,6 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -20,6 +25,14 @@ public class UserServceImpl implements UserService {
 
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    CustomerUsersDetailsService customerUsersDetailsService;
+
+    @Autowired AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtUtil jwtUtil;
 
     @Override
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
@@ -39,6 +52,8 @@ public class UserServceImpl implements UserService {
         }
 
     }
+
+
 
     private boolean validateRequestMap(Map<String, String> requestMap) {
         if (requestMap.containsKey("name") && requestMap.containsKey("contactNumber") &&
@@ -61,4 +76,24 @@ public class UserServceImpl implements UserService {
         user.setRole("user");
         return user;
     }
+
+    @Override
+    public ResponseEntity<String> login(Map<String, String> requestMap) {
+        System.out.println("Inside Login");
+
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(requestMap.get("email"),requestMap.get("password"))
+        );
+        if(auth.isAuthenticated()){
+            if(customerUsersDetailsService.getUserDetail().getStatus().equalsIgnoreCase("true")){
+                return new ResponseEntity<String>("token : "+jwtUtil.generateToken(
+                        customerUsersDetailsService.getUserDetail().getEmail(),
+                        customerUsersDetailsService.getUserDetail().getRole()),HttpStatus.OK);
+            }
+            else
+                return new ResponseEntity<String>("Wait for Admin Approval",HttpStatus.BAD_REQUEST );
+        }
+        return null;
+    }
+
 }

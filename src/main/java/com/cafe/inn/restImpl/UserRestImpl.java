@@ -25,4 +25,9 @@ public class UserRestImpl implements UserRest {
 
 
     }
+
+    @Override
+    public ResponseEntity<String> login(Map<String, String> requestMap) {
+        return userService.login(requestMap);
+    }
 }
