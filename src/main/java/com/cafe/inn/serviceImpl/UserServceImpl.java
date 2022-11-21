@@ -1,12 +1,14 @@
 package com.cafe.inn.serviceImpl;
 
 import com.cafe.inn.JWT.CustomerUsersDetailsService;
+import com.cafe.inn.JWT.JwtFilter;
 import com.cafe.inn.JWT.JwtUtil;
 import com.cafe.inn.POJO.User;
 import com.cafe.inn.constants.CafeConstants;
 import com.cafe.inn.dao.UserDao;
 import com.cafe.inn.service.UserService;
 import com.cafe.inn.utils.CafeUtils;
+import com.cafe.inn.wrapper.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -23,16 +27,17 @@ import java.util.Objects;
 @Service
 public class UserServceImpl implements UserService {
 
-    @Autowired
-    UserDao userDao;
+    @Autowired UserDao userDao;
 
     @Autowired
     CustomerUsersDetailsService customerUsersDetailsService;
 
     @Autowired AuthenticationManager authenticationManager;
 
+    @Autowired JwtUtil jwtUtil;
+
     @Autowired
-    JwtUtil jwtUtil;
+    JwtFilter jwtFilter;
 
     @Override
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
@@ -95,5 +100,19 @@ public class UserServceImpl implements UserService {
         }
         return null;
     }
+
+    @Override
+    public ResponseEntity<List<UserDto>> getAllUser() {
+        if(jwtFilter.isAdmin()){
+            return new ResponseEntity<>(userDao.getAllUsers(),HttpStatus.OK);
+
+        }
+        else{
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
+        }
+
+         //return  new ResponseEntity<>(new ArrayList<>(),HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
 }

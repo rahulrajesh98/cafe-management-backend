@@ -5,11 +5,13 @@ import com.cafe.inn.dao.UserDao;
 import com.cafe.inn.rest.UserRest;
 import com.cafe.inn.service.UserService;
 import com.cafe.inn.utils.CafeUtils;
+import com.cafe.inn.wrapper.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -30,4 +32,10 @@ public class UserRestImpl implements UserRest {
     public ResponseEntity<String> login(Map<String, String> requestMap) {
         return userService.login(requestMap);
     }
+
+    @Override
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        return userService.getAllUser();
+    }
+
 }
