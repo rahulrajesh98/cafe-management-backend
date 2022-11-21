@@ -19,6 +19,12 @@ public interface UserRest {
     @GetMapping("/get")
     public ResponseEntity<List<UserDto>> getAllUsers();
 
-    @PostMapping("/updatestatus")
+    @PostMapping("/updateStatus")
     public ResponseEntity<String> updateStatus(@RequestBody Map<String,String> requestMap);
+
+    @GetMapping("/checkToken")
+    public  ResponseEntity<String> checkToken();
+
+    @PostMapping("/changePassword")
+    public ResponseEntity<String> changePassword(@RequestBody Map<String,String> requestMap);
 }

@@ -11,6 +11,7 @@ import com.cafe.inn.utils.CafeUtils;
 import com.cafe.inn.utils.EmailUtils;
 import com.cafe.inn.wrapper.UserDto;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.valves.rewrite.RewriteCond;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 
@@ -132,6 +135,8 @@ public class UserServceImpl implements UserService {
             return new ResponseEntity<>("Unauthorized Access",HttpStatus.UNAUTHORIZED);
     }
 
+
+
     private void sendMailToAllAdmins(String status, String user, List<String> allAdmin) {
 
         allAdmin.remove(jwtFilter.getCurrentUser());
@@ -143,9 +148,28 @@ public class UserServceImpl implements UserService {
         else {
             String text = "User :\n "+user+" is disabled by \n "+jwtFilter.getCurrentUser();
             emailUtils.sendSimpleMessage(jwtFilter.getCurrentUser(),"Account Disabled",text,allAdmin);
-
         }
 
+    }
+    @Override
+    public ResponseEntity<String> checkToken() {
+        return new ResponseEntity<String>("true",HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<String> changePassword(Map<String, String> requestMap) {
+        User userObj = userDao.findByEmail(jwtFilter.getCurrentUser());
+        if(!ObjectUtils.isEmpty(userObj)) {
+            if(userObj.getPassword().equals(requestMap.get("oldPassword"))){
+                userObj.setPassword(requestMap.get("newPassword"));
+                userDao.save(userObj);
+                return  new ResponseEntity<>("Password changes successfully", HttpStatus.OK);
+            }
+            else
+                return new ResponseEntity<>("Old password wrong",HttpStatus.BAD_REQUEST);
+        }
+        else
+            return new ResponseEntity<>("No user found",HttpStatus.INTERNAL_SERVER_ERROR);
 
     }
 

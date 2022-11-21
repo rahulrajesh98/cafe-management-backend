@@ -43,5 +43,15 @@ public class UserRestImpl implements UserRest {
         return userService.updateStatus(requestMap);
     }
 
+    @Override
+    public ResponseEntity<String> checkToken() {
+         return userService.checkToken();
+    }
+
+    @Override
+    public ResponseEntity<String> changePassword(Map<String, String> requestMap) {
+        return userService.changePassword(requestMap);
+    }
+
 
 }
