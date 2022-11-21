@@ -8,6 +8,7 @@ import com.cafe.inn.constants.CafeConstants;
 import com.cafe.inn.dao.UserDao;
 import com.cafe.inn.service.UserService;
 import com.cafe.inn.utils.CafeUtils;
+import com.cafe.inn.utils.EmailUtils;
 import com.cafe.inn.wrapper.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class UserServceImpl implements UserService {
 
     @Autowired
     JwtFilter jwtFilter;
+
+    @Autowired
+    EmailUtils emailUtils;
 
     @Override
     public ResponseEntity<String> signUp(Map<String, String> requestMap) {
@@ -117,6 +121,7 @@ public class UserServceImpl implements UserService {
             Optional<User> optional = userDao.findById(Integer.parseInt(requestMap.get("id")));
             if(!optional.isEmpty()){
                 userDao.updateStatus(requestMap.get("status"),Integer.parseInt(requestMap.get("id")));
+                sendMailToAllAdmins(requestMap.get("status"),optional.get().getEmail(),userDao.getAllAdmin());
                 return new ResponseEntity<>("User status updated Successfully",HttpStatus.OK);
 
             }
@@ -125,6 +130,23 @@ public class UserServceImpl implements UserService {
         }
         else
             return new ResponseEntity<>("Unauthorized Access",HttpStatus.UNAUTHORIZED);
+    }
+
+    private void sendMailToAllAdmins(String status, String user, List<String> allAdmin) {
+
+        allAdmin.remove(jwtFilter.getCurrentUser());
+        if(status!=null && status.equalsIgnoreCase("true")){
+            String text = "User :\n "+user+" is approved by \n "+jwtFilter.getCurrentUser();
+            emailUtils.sendSimpleMessage(jwtFilter.getCurrentUser(),"Account Approved",text,allAdmin);
+
+        }
+        else {
+            String text = "User :\n "+user+" is disabled by \n "+jwtFilter.getCurrentUser();
+            emailUtils.sendSimpleMessage(jwtFilter.getCurrentUser(),"Account Disabled",text,allAdmin);
+
+        }
+
+
     }
 
 
