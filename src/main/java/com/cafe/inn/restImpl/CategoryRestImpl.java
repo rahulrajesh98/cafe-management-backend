@@ -25,4 +25,11 @@ public class CategoryRestImpl implements CategoryRest {
     public ResponseEntity<List<Category>> getAllCategory(String filterValue) {
         return categoryService.getAllCategory(filterValue);
     }
+
+    @Override
+    public ResponseEntity<String> updateCategory(Map<String, String> requestMap) {
+        return categoryService.updateCategory(requestMap);
+    }
+
+
 }
