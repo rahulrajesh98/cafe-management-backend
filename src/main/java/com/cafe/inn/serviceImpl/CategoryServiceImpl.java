@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -33,6 +35,8 @@ public class CategoryServiceImpl implements CategoryService {
         return new ResponseEntity<>("something went wrong while creating new category",HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+
+
     private boolean validateCategoryMap(Map<String, String> requestMap) {
         return requestMap.containsKey("name");
     }
@@ -41,6 +45,14 @@ public class CategoryServiceImpl implements CategoryService {
         Category category =new Category();
         category.setName(requestMap.get("name"));
         return category;
+    }
+
+    @Override
+    public ResponseEntity<List<Category>> getAllCategory(String filterValue) {
+        if(!ObjectUtils.isEmpty(filterValue) && filterValue.equalsIgnoreCase("true")){
+            return new ResponseEntity<List<Category>>(categoryDao.getAllCategory(),HttpStatus.OK);
+        }
+        return new ResponseEntity<>(categoryDao.findAll(),HttpStatus.OK);
     }
 
 }
